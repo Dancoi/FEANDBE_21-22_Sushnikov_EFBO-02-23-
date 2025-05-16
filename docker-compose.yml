@@ -1,0 +1,22 @@
+version: '3.8' # Версия синтаксиса docker-compose
+services:
+  # Бэкенд: сервер на Node.js
+  backend:
+    build:
+      context: .
+      dockerfile: server/Dockerfile # Путь к Dockerfile бэкенда
+    ports:
+      - "8080:8080" # Проброс портов: хост 4000 → контейнер 3000
+    restart: always # Перезапуск при сбое или перезагрузке Docker
+    volumes:
+      - ./data:/app/data/  # сохраняется локально
+
+  # Фронтенд: React-приложение, собранное и отданное через Nginx
+  frontend:
+    build:
+      context: .
+      dockerfile: client/Dockerfile # Путь к Dockerfile фронта
+    ports:
+      - "3030:3030" # Проброс портов: хост 3000 → контейнер 80 (Nginx)
+    depends_on:
+      - backend # Ждём запуска backend перед запуском frontend

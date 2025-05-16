@@ -1,0 +1,123 @@
+openapi: 3.0.0
+info:
+  title: Task Management API
+  version: 1.0.0
+  description: API для управления продуктами
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /products:
+    get:
+      summary: Получить список продуктов
+      operationId: getProducts
+      tags:
+        - Продукты
+      responses:
+        '200':
+          description: Список продуктов успешно получен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductList'
+
+    post:
+      summary: Добавить новый продукт
+      operationId: createProduct
+      tags:
+        - Продукты
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: Продукт успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+  /products/{id}:
+    put:
+      summary: Обновить продукт
+      operationId: updateProduct
+      tags:
+        - Продукты
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Продукт успешно обновлён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Продукт не найден
+
+    delete:
+      summary: Удалить продукт
+      operationId: deleteProduct
+      tags:
+        - Продукты
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Продукт успешно удалён
+        '404':
+          description: Продукт не найден
+
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - id
+        - name
+        - price
+        - categories
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Product 1"
+        price:
+          type: number
+          example: 100
+        description:
+          type: string
+          example: "This is product 1"
+        categories:
+          type: array
+          items:
+            type: string
+          example: ["Category 1"]
+
+    ProductList:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
